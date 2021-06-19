@@ -44,8 +44,6 @@
       elem.scrollHeight = elem.heightNum * window.innerHeight;
       elem.objs.container.style.height = `${elem.scrollHeight}px`;
     }
-
-    console.log(sceneInfo);
   }
 
   window.addEventListener("resize", setLayout);
