@@ -176,7 +176,6 @@
       case 0:
         const image =
           objs.videoImages[Math.round(scrollRatio * values.videoImageCount)];
-        console.log(image);
         objs.context.drawImage(image, 0, 0);
         if (scrollRatio <= 0.22) {
           // in
@@ -378,8 +377,12 @@
     enterNewScene || playAnimation();
   }
 
-  window.addEventListener("load", setLayout);
   window.addEventListener("resize", setLayout);
+  window.addEventListener("load", () => {
+    const image = sceneInfo[0].objs.videoImages[0];
+    sceneInfo[0].objs.context.drawImage(image, 0, 0);
+    setLayout();
+  });
   window.addEventListener("scroll", () => {
     yOffset = window.pageYOffset;
     scrollLoop();
