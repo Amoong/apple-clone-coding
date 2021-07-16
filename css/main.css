@@ -172,6 +172,16 @@ a {
   background: darkorange;
 }
 
+.image-blend-canvas {
+  background-color: teal;
+}
+
+#scroll-section-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .sticky-elem {
   display: none;
   position: fixed;
