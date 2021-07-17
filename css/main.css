@@ -172,11 +172,8 @@ a {
   background: darkorange;
 }
 
-.image-blend-canvas {
-  background-color: teal;
-}
-
 #scroll-section-3 {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;

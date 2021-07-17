@@ -106,6 +106,7 @@
         imagesPath: ["./images/blend-image-1.jpg", "./images/blend-image-2.jpg"],
         rect1X: [0, 0, { start: 0, end: 0 }],
         rect2X: [0, 0, { start: 0, end: 0 }],
+        rectStartY: 0,
       },
     },
   ];
@@ -131,7 +132,6 @@
       imgElem3.src = sceneInfo[3].values.imagesPath[i];
       sceneInfo[3].objs.images.push(imgElem3);
     }
-    console.log(sceneInfo[3].objs.images);
   }
   setCanvasImages();
 
@@ -334,7 +334,9 @@
         break;
       case 3:
         // 가로 세로 모두 꽉차게 하기 위해 여기서 세팅(계산 필요)
-        const widthRatio = window.innerWidth / objs.canvas.width;
+        // const widthRatio = window.innerWidth / objs.canvas.width;
+        // window.innerWidth 를 쓰면 스크롤바까지 포함된 너비가 구해져서 아래 방법을 사용
+        const widthRatio = document.body.offsetWidth / objs.canvas.width;
         const heightRatio = window.innerHeight / objs.canvas.height;
         let canvasScaleRatio;
 
@@ -347,10 +349,22 @@
         }
 
         objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+        objs.context.fillStyle = "white";
         objs.context.drawImage(objs.images[0], 0, 0);
 
         const recalculatedInnerWidth = window.innerWidth / canvasScaleRatio;
         const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
+
+        if (values.rectStartY === 0) {
+          values.rectStartY =
+            objs.canvas.offsetTop +
+            (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
+          console.log(values.rectStartY);
+          values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
+          values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
+          values.rect1X[2].end = values.rectStartY / scrollHeight;
+          values.rect2X[2].end = values.rectStartY / scrollHeight;
+        }
 
         const whiteRectWidth = recalculatedInnerWidth * 0.15;
         values.rect1X[0] = (objs.canvas.width - recalculatedInnerWidth) / 2;
@@ -359,10 +373,19 @@
         values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
 
         // 좌우 흰색 박스 그리기
-        objs.context.fillRect(values.rect1X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
-        objs.context.fillRect(values.rect2X[0], 0, parseInt(whiteRectWidth), objs.canvas.height);
+        objs.context.fillRect(
+          calcValues(values.rect1X, currentYOffset),
+          0,
+          parseInt(whiteRectWidth),
+          objs.canvas.height
+        );
 
-        console.log(recalculatedInnerWidth, recalculatedInnerHeight);
+        objs.context.fillRect(
+          calcValues(values.rect2X, currentYOffset),
+          0,
+          parseInt(whiteRectWidth),
+          objs.canvas.height
+        );
 
         break;
     }
