@@ -369,6 +369,7 @@
 
         break;
       case 3:
+        let step = 0;
         // 가로 세로 모두 꽉차게 하기 위해 여기서 세팅(계산 필요)
         // const widthRatio = window.innerWidth / objs.canvas.width;
         // window.innerWidth 를 쓰면 스크롤바까지 포함된 너비가 구해져서 아래 방법을 사용
@@ -421,6 +422,19 @@
           parseInt(whiteRectWidth),
           objs.canvas.height
         );
+
+        if (scrollRatio < values.rect1X[2].end) {
+          step = 1;
+          console.log("캔버스 닿기 전");
+          objs.canvas.classList.remove("sticky");
+        } else {
+          step = 2;
+          objs.canvas.classList.add("sticky");
+          objs.canvas.style.top = `-${
+            (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2
+          }px`;
+          console.log("캔버스 닿은 후");
+        }
 
         break;
     }
