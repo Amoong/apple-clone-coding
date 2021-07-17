@@ -106,6 +106,7 @@
         imagesPath: ["./images/blend-image-1.jpg", "./images/blend-image-2.jpg"],
         rect1X: [0, 0, { start: 0, end: 0 }],
         rect2X: [0, 0, { start: 0, end: 0 }],
+        blendHeight: [0, 0, { start: 0, end: 0 }],
         rectStartY: 0,
       },
     },
@@ -425,15 +426,35 @@
 
         if (scrollRatio < values.rect1X[2].end) {
           step = 1;
-          console.log("캔버스 닿기 전");
           objs.canvas.classList.remove("sticky");
         } else {
+          // 캔버스 닿은 후
+          // 이미지 블랜드
+          // imageBlendY: [0, 0, { start: 0, end: 0 }],
           step = 2;
           objs.canvas.classList.add("sticky");
           objs.canvas.style.top = `-${
             (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2
           }px`;
-          console.log("캔버스 닿은 후");
+
+          values.blendHeight[0] = 0;
+          values.blendHeight[1] = objs.canvas.height;
+          values.blendHeight[2].start = values.rect1X[2].end;
+          values.blendHeight[2].end = values.blendHeight[2].start + 0.2;
+
+          const blendHeight = calcValues(values.blendHeight, currentYOffset);
+
+          objs.context.drawImage(
+            objs.images[1],
+            0,
+            objs.canvas.height - blendHeight,
+            objs.canvas.width,
+            blendHeight,
+            0,
+            objs.canvas.height - blendHeight,
+            objs.canvas.width,
+            blendHeight
+          );
         }
 
         break;
