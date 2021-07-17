@@ -468,6 +468,10 @@
               currentYOffset
             )})`;
           }
+
+          if (scrollRatio > values.canvas_scale[2].end && values.canvas_scale[2].end > 0) {
+            console.log("슈루룩");
+          }
         }
 
         break;
