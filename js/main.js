@@ -5,6 +5,10 @@
   let prevScrollHeight = 0;
   let currentScene = 0; // 현재 활성화된(눈 앞에 보고있는) 씬(scroll-section)
   let enterNewScene = false; // 새로운 scene이 시작된 순간 true
+  let acc = 0.1;
+  let delayedYOffset = 0;
+  let rafId;
+  let rafState;
 
   const sceneInfo = [
     {
@@ -137,7 +141,6 @@
       sceneInfo[3].objs.images.push(imgElem3);
     }
   }
-  setCanvasImages();
 
   function checkMenu() {
     if (yOffset > 44) {
@@ -213,22 +216,22 @@
 
     switch (currentScene) {
       case 0:
-        let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
-        objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+        // let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
+        // objs.context.drawImage(objs.videoImages[sequence], 0, 0);
         objs.canvas.style.opacity = calcValues(values.canvas_opacity, currentYOffset);
         if (scrollRatio <= 0.22) {
           // in
           objs.messageA.style.opacity = calcValues(values.messageA_opacity_in, currentYOffset);
           objs.messageA.style.transform = `translate3d(0, ${calcValues(
             values.messageA_translateY_in,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         } else {
           // out
           objs.messageA.style.opacity = calcValues(values.messageA_opacity_out, currentYOffset);
           objs.messageA.style.transform = `translate3d(${calcValues(
             values.messageA_translateY_out,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         }
 
@@ -237,14 +240,14 @@
           objs.messageB.style.opacity = calcValues(values.messageB_opacity_in, currentYOffset);
           objs.messageB.style.transform = `translate3d(0, ${calcValues(
             values.messageB_translateY_in,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         } else {
           // out
           objs.messageB.style.opacity = calcValues(values.messageB_opacity_out, currentYOffset);
           objs.messageB.style.transform = `translate3d(0, ${calcValues(
             values.messageB_translateY_out,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         }
 
@@ -253,14 +256,14 @@
           objs.messageC.style.opacity = calcValues(values.messageC_opacity_in, currentYOffset);
           objs.messageC.style.transform = `translate3d(0, ${calcValues(
             values.messageC_translateY_in,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         } else {
           // out
           objs.messageC.style.opacity = calcValues(values.messageC_opacity_out, currentYOffset);
           objs.messageC.style.transform = `translate3d(0, ${calcValues(
             values.messageC_translateY_out,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         }
 
@@ -269,21 +272,21 @@
           objs.messageD.style.opacity = calcValues(values.messageD_opacity_in, currentYOffset);
           objs.messageD.style.transform = `translate3d(0, ${calcValues(
             values.messageD_translateY_in,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         } else {
           // out
           objs.messageD.style.opacity = calcValues(values.messageD_opacity_out, currentYOffset);
           objs.messageD.style.transform = `translate3d(0, ${calcValues(
             values.messageD_translateY_out,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         }
 
         break;
       case 2:
-        let sequence2 = Math.round(calcValues(values.imageSequence, currentYOffset));
-        objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
+        // let sequence2 = Math.round(calcValues(values.imageSequence, currentYOffset));
+        // objs.context.drawImage(objs.videoImages[sequence2], 0, 0);
         if (scrollRatio <= 0.5) {
           // in
           objs.canvas.style.opacity = calcValues(values.canvas_opacity_in, currentYOffset);
@@ -297,14 +300,14 @@
           objs.messageA.style.opacity = calcValues(values.messageA_opacity_in, currentYOffset);
           objs.messageA.style.transform = `translate3d(0, ${calcValues(
             values.messageA_translateY_in,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         } else {
           // out
           objs.messageA.style.opacity = calcValues(values.messageA_opacity_out, currentYOffset);
           objs.messageA.style.transform = `translate3d(0, ${calcValues(
             values.messageA_translateY_out,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
         }
 
@@ -312,7 +315,7 @@
           // in
           objs.messageB.style.transform = `translate3d(0, ${calcValues(
             values.messageB_translateY_in,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
           objs.messageB.style.opacity = calcValues(values.messageB_opacity_in, currentYOffset);
           objs.pinB.style.transform = `scaleY(${calcValues(values.pinB_scaleY, currentYOffset)})`;
@@ -320,7 +323,7 @@
           // out
           objs.messageB.style.transform = `translate3d(0, ${calcValues(
             values.messageB_translateY_out,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
           objs.messageB.style.opacity = calcValues(values.messageB_opacity_out, currentYOffset);
           objs.pinB.style.transform = `scaleY(${calcValues(values.pinB_scaleY, currentYOffset)})`;
@@ -330,7 +333,7 @@
           // in
           objs.messageC.style.transform = `translate3d(0, ${calcValues(
             values.messageC_translateY_in,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
           objs.messageC.style.opacity = calcValues(values.messageC_opacity_in, currentYOffset);
           objs.pinC.style.transform = `scaleY(${calcValues(values.pinC_scaleY, currentYOffset)})`;
@@ -338,7 +341,7 @@
           // out
           objs.messageC.style.transform = `translate3d(0, ${calcValues(
             values.messageC_translateY_out,
-            currentYOffset
+            currentYOffset,
           )}%, 0)`;
           objs.messageC.style.opacity = calcValues(values.messageC_opacity_out, currentYOffset);
           objs.pinC.style.transform = `scaleY(${calcValues(values.pinC_scaleY, currentYOffset)})`;
@@ -425,14 +428,14 @@
           calcValues(values.rect1X, currentYOffset),
           0,
           parseInt(whiteRectWidth),
-          objs.canvas.height
+          objs.canvas.height,
         );
 
         objs.context.fillRect(
           calcValues(values.rect2X, currentYOffset),
           0,
           parseInt(whiteRectWidth),
-          objs.canvas.height
+          objs.canvas.height,
         );
 
         if (scrollRatio < values.rect1X[2].end) {
@@ -464,7 +467,7 @@
             0,
             objs.canvas.height - blendHeight,
             objs.canvas.width,
-            blendHeight
+            blendHeight,
           );
 
           if (scrollRatio > values.blendHeight[2].end) {
@@ -475,7 +478,7 @@
 
             objs.canvas.style.transform = `scale(${calcValues(
               values.canvas_scale,
-              currentYOffset
+              currentYOffset,
             )})`;
             objs.canvas.style.marginTop = "0";
           }
@@ -490,11 +493,11 @@
             values.canvasCaption_translateY[2].end = values.canvasCaption_translateY[2].start + 0.1;
             objs.canvasCaption.style.opacity = calcValues(
               values.canvasCaption_opacity,
-              currentYOffset
+              currentYOffset,
             );
             objs.canvasCaption.style.transform = `translate3d(0, ${calcValues(
               values.canvasCaption_translateY,
-              currentYOffset
+              currentYOffset,
             )}%, 0)`;
           }
         }
@@ -511,13 +514,13 @@
       prevScrollHeight += sceneInfo[i].scrollHeight;
     }
 
-    if (yOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
+    if (delayedYOffset > prevScrollHeight + sceneInfo[currentScene].scrollHeight) {
       enterNewScene = true;
       currentScene++;
       document.body.setAttribute("id", `show-scene-${currentScene}`);
     }
 
-    if (yOffset < prevScrollHeight && currentScene > 0) {
+    if (delayedYOffset < prevScrollHeight && currentScene > 0) {
       enterNewScene = true;
       currentScene--;
       document.body.setAttribute("id", `show-scene-${currentScene}`);
@@ -526,15 +529,54 @@
     enterNewScene || playAnimation();
   }
 
-  window.addEventListener("resize", setLayout);
+  function loop() {
+    delayedYOffset = delayedYOffset + (yOffset - delayedYOffset) * acc;
+
+    if (!enterNewScene) {
+      if (currentScene === 0 || currentScene === 2) {
+        const currentYOffset = delayedYOffset - prevScrollHeight;
+        const objs = sceneInfo[currentScene].objs;
+        const values = sceneInfo[currentScene].values;
+        let sequence = Math.round(calcValues(values.imageSequence, currentYOffset));
+        if (objs.videoImages[sequence]) {
+          objs.context.drawImage(objs.videoImages[sequence], 0, 0);
+        }
+      }
+    }
+
+    rafId = requestAnimationFrame(loop);
+
+    if (Math.abs(yOffset - delayedYOffset) < 1) {
+      cancelAnimationFrame(rafId);
+      rafState = false;
+    }
+  }
+
+  window.addEventListener("scroll", () => {
+    yOffset = window.pageYOffset;
+    scrollLoop();
+    checkMenu();
+
+    if (!rafState) {
+      rafId = requestAnimationFrame(loop);
+      rafState = true;
+    }
+  });
+
   window.addEventListener("load", () => {
     const image = sceneInfo[0].objs.videoImages[0];
     sceneInfo[0].objs.context.drawImage(image, 0, 0);
     setLayout();
   });
-  window.addEventListener("scroll", () => {
-    yOffset = window.pageYOffset;
-    scrollLoop();
-    checkMenu();
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) {
+      setLayout();
+    }
+    sceneInfo[2].values.rectStartY = 0;
   });
+
+  window.addEventListener("orientationchange", setLayout);
+
+  setCanvasImages();
 })();
