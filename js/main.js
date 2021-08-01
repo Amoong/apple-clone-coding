@@ -552,35 +552,36 @@
     }
   }
 
-  window.addEventListener("scroll", () => {
-    yOffset = window.pageYOffset;
-    scrollLoop();
-    checkMenu();
-
-    if (!rafState) {
-      rafId = requestAnimationFrame(loop);
-      rafState = true;
-    }
-  });
-
   window.addEventListener("load", () => {
     document.body.classList.remove("before-load");
     const image = sceneInfo[0].objs.videoImages[0];
     sceneInfo[0].objs.context.drawImage(image, 0, 0);
     setLayout();
+
+    window.addEventListener("scroll", () => {
+      yOffset = window.pageYOffset;
+      scrollLoop();
+      checkMenu();
+
+      if (!rafState) {
+        rafId = requestAnimationFrame(loop);
+        rafState = true;
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 900) {
+        setLayout();
+      }
+      sceneInfo[2].values.rectStartY = 0;
+    });
+
+    window.addEventListener("orientationchange", setLayout);
+    document.querySelector(".loading").addEventListener("transitionend", e => {
+      document.body.removeChild(e.currentTarget);
+      console.log("hi");
+    });
   });
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 900) {
-      setLayout();
-    }
-    sceneInfo[2].values.rectStartY = 0;
-  });
-
-  window.addEventListener("orientationchange", setLayout);
-  document.querySelector(".loading").addEventListener("transitionend", e => {
-    document.body.removeChild(e.currentTarget);
-    console.log("hi");
-  });
   setCanvasImages();
 })();
