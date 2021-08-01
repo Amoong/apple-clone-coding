@@ -564,6 +564,7 @@
   });
 
   window.addEventListener("load", () => {
+    document.body.classList.remove("before-load");
     const image = sceneInfo[0].objs.videoImages[0];
     sceneInfo[0].objs.context.drawImage(image, 0, 0);
     setLayout();
@@ -577,6 +578,9 @@
   });
 
   window.addEventListener("orientationchange", setLayout);
-
+  document.querySelector(".loading").addEventListener("transitionend", e => {
+    document.body.removeChild(e.currentTarget);
+    console.log("hi");
+  });
   setCanvasImages();
 })();

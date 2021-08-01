@@ -215,8 +215,11 @@ a {
   left: 0;
   z-index: 100;
   background: white;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.before-load .loading {
   opacity: 1;
-  transition: 0.5s;
 }
 @keyframes loading-circle-ani {
   0% {
