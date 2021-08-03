@@ -20,7 +20,6 @@ a {
   color: rgb(29, 29, 31);
   text-decoration: none;
 }
-
 body.before-load {
   overflow: hidden;
 }
@@ -226,6 +225,10 @@ body.before-load {
   opacity: 0;
   transition: opacity 0.5s;
 }
+.before-load .container {
+  display: none;
+}
+
 .before-load .loading {
   opacity: 1;
 }
