@@ -558,6 +558,20 @@
     sceneInfo[0].objs.context.drawImage(image, 0, 0);
     setLayout();
 
+    let tempYOffset = yOffset;
+    let tempScrollCount = 0;
+    if (yOffset > 0) {
+      let siId = setInterval(() => {
+        window.scrollTo(0, tempYOffset);
+        tempYOffset += 2;
+        tempScrollCount++;
+
+        if (tempScrollCount > 20) {
+          clearInterval(siId);
+        }
+      }, 20);
+    }
+
     window.addEventListener("scroll", () => {
       yOffset = window.pageYOffset;
       scrollLoop();
