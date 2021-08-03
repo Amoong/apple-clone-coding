@@ -585,13 +585,15 @@
 
     window.addEventListener("resize", () => {
       if (window.innerWidth > 900) {
-        setLayout();
-        sceneInfo[2].values.rectStartY = 0;
+        window.location.reload();
       }
     });
 
     window.addEventListener("orientationchange", () => {
-      setTimeout(setLayout, 500);
+      scrollTo(0, 0);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     });
     document.querySelector(".loading").addEventListener("transitionend", e => {
       document.body.removeChild(e.currentTarget);
